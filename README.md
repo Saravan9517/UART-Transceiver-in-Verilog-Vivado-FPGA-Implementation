@@ -170,11 +170,8 @@ Simulation verifies:
 The following features are planned for future versions:
 
 - Reset support
-- Framing Error Detection
-- Parity Bit (Even/Odd)
 - Configurable Data Length
 - Configurable Stop Bits
-- Dedicated Baud Rate Generator
 - RX/TX FIFO Buffers
 - Oversampling Receiver (16x)
 - Majority Voting Receiver
