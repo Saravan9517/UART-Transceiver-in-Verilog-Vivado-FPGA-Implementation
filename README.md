@@ -13,7 +13,7 @@ The design supports standard UART communication consisting of:
 - 1 Start Bit
 - 8 Data Bits
 - 1 Stop Bit
-- No Parity (Current Version)
+- Parity bit
 
 ---
 
@@ -47,11 +47,12 @@ UART_Transceiver
 
 ## UART Frame Format
 
-```
-Idle      Start      Data Bits                 Stop
-  1    |    0    | D0 D1 D2 D3 D4 D5 D6 D7 |   1
-```
 
+|Idle|      Start     | Data Bits          |   Stop |
+|----|----------------|--------------------|--------|
+| 1    |    0    | D0 D1 D2 D3 D4 D5 D6 D7 |   1  |
+```
+```
 - Idle Line = HIGH
 - Start Bit = LOW
 - Data transmitted LSB first
@@ -170,11 +171,8 @@ Simulation verifies:
 The following features are planned for future versions:
 
 - Reset support
-- Framing Error Detection
-- Parity Bit (Even/Odd)
 - Configurable Data Length
 - Configurable Stop Bits
-- Dedicated Baud Rate Generator
 - RX/TX FIFO Buffers
 - Oversampling Receiver (16x)
 - Majority Voting Receiver
@@ -196,20 +194,3 @@ This project helped in understanding:
 - Functional Verification using Vivado
 
 ---
-
-## Current Status
-
-- [x] UART Transmitter
-- [x] UART Receiver
-- [x] Baud Rate Generator
-- [x] Loopback Simulation
-- [ ] FPGA Hardware Verification
-- [ ] Parity Support
-- [ ] Framing Error Detection
-- [ ] FIFO Support
-
----
-
-## License
-
-This project is developed for learning and educational purposes.
