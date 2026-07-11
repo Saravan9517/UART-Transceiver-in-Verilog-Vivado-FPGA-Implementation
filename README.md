@@ -13,7 +13,7 @@ The design supports standard UART communication consisting of:
 - 1 Start Bit
 - 8 Data Bits
 - 1 Stop Bit
-- No Parity (Current Version)
+- Parity bit
 
 ---
 
@@ -47,9 +47,10 @@ UART_Transceiver
 
 ## UART Frame Format
 
-```
-Idle      Start      Data Bits                 Stop
-  1    |    0    | D0 D1 D2 D3 D4 D5 D6 D7 |   1
+
+|Idle|      Start     | Data Bits          |   Stop |
+|----|----------------|--------------------|--------|
+| 1    |    0    | D0 D1 D2 D3 D4 D5 D6 D7 |   1  |
 ```
 
 - Idle Line = HIGH
