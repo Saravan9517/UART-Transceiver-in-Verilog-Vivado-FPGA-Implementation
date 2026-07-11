@@ -28,7 +28,8 @@ input i_parity_bit,
 output reg parity_error,
 output reg frame_error,
 output reg [7:0]o_rx_byte,
-output reg o_rx_done);
+output reg o_rx_done,
+output reg o_rx_busy);
 
 baud_gen #(clk_per_bit) 
  baudrate(.i_clock(i_clock),
@@ -50,6 +51,7 @@ always@(posedge i_clock) begin
         s_rx_index <= 0;
         clk_cycle_count <= 0;
         frame_error <=0;
+        o_rx_busy <= 0;
        
     end
     else begin
@@ -61,12 +63,14 @@ always@(posedge i_clock) begin
                     s_rx_main <= 0;
                     frame_error <=0;
                     parity_error <= 0;
+                    o_rx_busy <= 1'b1;
                     if(i_rx_serialdata == 1'b1)
                         begin
                             clk_cycle_count <= 0;
                             s_rx_index <=0;
                             s_rx_main <= s_IDLE;
                             o_rx_done <= 0;
+                            o_rx_busy <= 1'b0;
                         end
                     else
                         begin
@@ -140,6 +144,7 @@ always@(posedge i_clock) begin
                             begin 
                                 if(i_rx_serialdata == 1'b1) begin
                                     o_rx_done <= 1'b1;
+                                    o_rx_busy <= 1'b0;
                                     frame_error <=1'b0;
                                 end
                                 else begin

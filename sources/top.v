@@ -28,7 +28,8 @@ input rst,
 output parity_error,
 output frame_error,
 output [7:0]o_rx_byte,
-output o_rx_done);
+output o_rx_done,
+output o_rx_busy);
 
 wire o_parity_bit;
 wire o_tx_serialdata;
@@ -53,5 +54,6 @@ rx( .i_clock(i_clock),
     .parity_error(parity_error),
     .frame_error(frame_error),
     .o_rx_byte(o_rx_byte[7:0]),
-    .o_rx_done(o_rx_done));
+    .o_rx_done(o_rx_done),
+    .o_rx_busy(o_rx_busy));
 endmodule

@@ -28,6 +28,7 @@ wire parity_error;
 wire frame_error;
 wire [7:0]o_rx_byte;
 wire o_rx_done;
+wire o_rx_busy;
 parameter clk_per_bit = 10;
 always #5 i_clock <= ~i_clock;
 top
@@ -40,7 +41,8 @@ duv(.i_clock(i_clock),
     .parity_error(parity_error),
     .frame_error(frame_error),
     .o_rx_byte(o_rx_byte[7:0]),
-    .o_rx_done(o_rx_done));
+    .o_rx_done(o_rx_done),
+    .o_rx_busy(o_rx_busy));
 
 initial begin
     i_tx_byte <= 8'b1011_1010;
