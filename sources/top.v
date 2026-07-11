@@ -41,7 +41,7 @@ tx( .i_clock(i_clock),
     .i_tx_enable(i_tx_enable),
     .i_tx_byte(i_tx_byte[7:0]),
     .i_tx_rst(rst),
-    .o_parity_bit(o_parity_bit),
+    
     .o_tx_serialdata(o_tx_serialdata),
     .o_tx_done(o_tx_done));
     
@@ -50,7 +50,7 @@ uart_rx
 rx( .i_clock(i_clock),
     .i_rx_serialdata(o_tx_serialdata),
     .i_rx_rst(rst),
-    .i_parity_bit(o_parity_bit),
+    
     .parity_error(parity_error),
     .frame_error(frame_error),
     .o_rx_byte(o_rx_byte[7:0]),

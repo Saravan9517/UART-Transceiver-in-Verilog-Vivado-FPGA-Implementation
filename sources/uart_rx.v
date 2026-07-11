@@ -23,7 +23,6 @@ module uart_rx
 (input i_clock,
 input i_rx_serialdata,
 input i_rx_rst,
-input i_parity_bit,
 
 output reg parity_error,
 output reg frame_error,
@@ -124,7 +123,7 @@ always@(posedge i_clock) begin
                             else
                                 begin
                                     clk_cycle_count <= 0;
-                                    if(r_parity_bit == i_parity_bit) begin
+                                    if(r_parity_bit == i_rx_serialdata) begin
                                         parity_error <= 0;
                                     end
                                     else begin

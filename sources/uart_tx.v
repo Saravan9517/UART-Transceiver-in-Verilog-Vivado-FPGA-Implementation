@@ -25,13 +25,16 @@ input i_tx_enable,
 input [7:0]i_tx_byte,
 input i_tx_rst,
 
-output reg o_parity_bit,
 output reg o_tx_serialdata,
 output reg o_tx_done);
-
+//parity bit
+wire parity_bit;
+assign parity_bit = ^i_tx_byte;
+reg i_baud_enable;
 baud_gen #(clk_per_bit)
 baudrate(.i_clock(i_clock),
          .i_rst(i_tx_rst),
+         .i_enable(i_baud_enable),
          .o_baud_tick(baud_tick));
          
 localparam s_IDLE = 3'b000;
@@ -46,16 +49,20 @@ always@(posedge i_clock) begin
     if(i_tx_rst) begin
         s_tx_main <= s_IDLE;
         s_tx_index<= 0;
+        o_tx_serialdata <= 1'b1;
+        o_tx_done <= 1'b0;
+        i_baud_enable <= 1'b0;
         end
         else begin
             case(s_tx_main)
                 s_IDLE:   //in idle state o_tx_serialdata = 1 it has to be high so the receiver detects the start bit when its low in start_bit state
                     begin
+                        i_baud_enable = 1'b0;
+                        o_tx_done <=0;
                         o_tx_serialdata <= 1'b1;
                         if(i_tx_enable)begin
-                            o_tx_done <=0;
-                            s_tx_main <= s_START_BIT;
                             s_tx_index <= 0;
+                            s_tx_main <= s_START_BIT;
                          end
                          else begin
                             s_tx_main <= s_IDLE;
@@ -64,6 +71,7 @@ always@(posedge i_clock) begin
             
                 s_START_BIT:// the o_tx_serialdata = 1'b0 and it stays for one bit_period dependent on baudrate
                     begin
+                        i_baud_enable <= 1'b1;
                         if(~baud_tick) begin
                             o_tx_serialdata <= 1'b0;
                         end
@@ -74,7 +82,7 @@ always@(posedge i_clock) begin
                     
                 s_DATA_BIT: //after start_bit on o_tx_serial_data the databits are transmitted from lsb to msb through o_tx_serialdata
                     begin
-                        o_tx_serialdata = i_tx_byte[s_tx_index];
+                        o_tx_serialdata <= i_tx_byte[s_tx_index];
                         if(baud_tick) begin
                              if(s_tx_index < 7) begin
                                 s_tx_index <= s_tx_index+1;
@@ -86,10 +94,9 @@ always@(posedge i_clock) begin
                      end
                 s_PARITY_BIT:
                     begin
-                         o_parity_bit <= i_tx_byte[7]^i_tx_byte[6]^i_tx_byte[5]^i_tx_byte[4]^i_tx_byte[3]^i_tx_byte[2]^i_tx_byte[1]^i_tx_byte[0];   
+                         o_tx_serialdata <= parity_bit;
                          if(baud_tick) begin
                              s_tx_main <= s_STOP_BIT;
-                             o_tx_serialdata <= o_parity_bit;
                          end
                     end
                             
@@ -99,6 +106,7 @@ always@(posedge i_clock) begin
                             o_tx_serialdata <= 1'b1;
                         end
                         else begin
+                            i_baud_enable <= 1'b0;
                             o_tx_done <= 1'b1;
                             s_tx_main <= s_IDLE;
                         end

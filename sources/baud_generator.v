@@ -22,22 +22,29 @@ module baud_gen
 #(parameter clk_per_bit = 10)
 (input i_clock,
 input i_rst,
+input i_enable,
 output reg  o_baud_tick);
 reg [15:0]clk_cycle_count =0;
 always@(posedge i_clock) begin
-    if(i_rst)begin
-        clk_cycle_count <= 0;
-        o_baud_tick <= 0;
-    end
-    else begin
-        if(clk_cycle_count < clk_per_bit-1) begin
-            clk_cycle_count <= clk_cycle_count+1;
+    if(i_enable)begin
+        if(i_rst)begin
+            clk_cycle_count <= 0;
             o_baud_tick <= 0;
         end
-        else begin 
-            clk_cycle_count <= 0;
-            o_baud_tick <= 1'b1;
+        else begin
+            if(clk_cycle_count < clk_per_bit-1) begin
+                clk_cycle_count <= clk_cycle_count+1;
+                o_baud_tick <= 0;
+            end
+            else begin 
+                clk_cycle_count <= 0;
+                o_baud_tick <= 1'b1;
+            end
         end
-    end
+     end
+     else begin
+        clk_cycle_count <= 0;
+        o_baud_tick <= 0;
+     end
 end
 endmodule
